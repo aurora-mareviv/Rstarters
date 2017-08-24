@@ -1,0 +1,352 @@
+---
+title: "Cuaderno 2: Descriptivo"
+author: "Aurora Baluja"
+date: "24 de agosto de 2017"
+output:
+  html_document:
+    toc: true
+    toc_float:
+      collapsed: false
+      smooth_scroll: false
+    theme: united
+    highlight: tango
+---
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, results='hide'}
+# Instala paquetes que puedan faltar en tu sistema. Automagicamente!
+list.of.packages <- c("rmarkdown", "base64enc", "jsonlite", "ggplot2", "Rcpp", "knitr", "car", "RColorBrewer", "gridExtra")
+new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
+if(length(new.packages)) install.packages(new.packages, repos='https://cran.rstudio.com/')
+```
+
+
+## Introducci&oacute;n
+
+#### Copiar las carpetas y subcarpetas en el ordenador
+Todo el tutorial se puede descargar en *.ZIP* desde este [enlace](https://github.com/aurora-mareviv/Rstarters/archive/master.zip).   
+
+**Nota**: Este documento **RMD** y su HTML nos permiten conservar los comandos utilizados: para usarlos cuando nos hagan falta, pero integrados con texto de forma m&aacute;s visual que un simple script de R con comentarios (#). Ver&aacute;s que al principio del RMD hay incluido un cabecero donde se pueden dar algunos toques de apariencia (como usar la paleta *tango* de colores). Ese cabecero no est&aacute; escrito en R, por tanto no se debe modificar de ninguna forma, ya que incluso los espacios en blanco tienen su significado.
+
+Para importar los datos de nuestra base, usaremos el siguiente [m&eacute;todo](http://www.r-tutor.com/r-introduction/data-frame/data-import). 
+
+Este es mi directorio de trabajo:
+
+```{r comment="  ", eval=FALSE}
+getwd()
+```
+
+```{r comment="  ", echo=FALSE}
+paste("/..../Rstarters/RmarkdownProject/")
+```
+
+
+- Debemos fijarnos en que el directorio/carpeta de trabajo coincida con aquel que queremos y en el que est&aacute;n los datos. En R se llama el "working directory".      
+- Para lograr eso en un documento *.RMD*, la mejor soluci&oacute;n es que *todo* est&eacute; en una misma carpeta: scripts, datos etc...
+- Lo asigno a una variable de R. Tiene el formato "character" que significa que es una cadena de texto sencillamente. 
+
+```{r comment="  "}
+# la carpeta donde esta el cuaderno
+wdir <- getwd() 
+# la carpeta donde guardo los datos
+datadir <- paste(wdir, "/data", sep="")
+# la carpeta donde guardo las imagenes
+plotdir <- paste(wdir, "/rplot", sep="")
+# y la carpeta inmediatamente por encima
+wdirUp <- gsub("\\Rmarkdown_Project", "", wdir) 
+```
+
+
+## Importaci&oacute;n de datos
+
+Las rutas donde se hallan los datos las uso para el comando de importaci&oacute;n (de momento vamos a obviar la parte de importaci&oacute;n de Excel)   
+
+- Si tu archivo est&aacute; en formato *.csv* por ejemplo, necesitas este comando:
+```{r  comment="  "}
+dataname <- "data-training_acath.csv"
+mydata <- read.csv(paste(datadir, "/", dataname, sep=""), 
+         header = TRUE, 
+         sep = "\t",
+         dec = ",")
+# sep = "\t" si las columnas estan separadas por un tabulador (recomendado)
+# sep = "," si las columnas estan separadas por una coma
+# sep = ";" si las columnas estan separadas por un punto y coma.... etc
+
+# dec = "," si los decimales son con forma de coma
+# dec = "." si los decimales son con forma de punto
+```
+- Echa un vistazo a la ayuda de la funci&oacute;n de importaci&oacute;n con el comando de consola: `?read.csv`.
+
+### Los datos `acath`:
+
+Sacados del siguiente [enlace](http://biostat.mc.vanderbilt.edu/wiki/Main/DataSets). Los datos se hallan explicados [aqu&iacute;](http://biostat.mc.vanderbilt.edu/wiki/pub/Main/DataSets/Cacath.html).  
+
+
+Name            Labels	                                         Units    Storage     NAs
+---------     --------	                                         ------   --------  -----
+sex	    		                                                              double    0
+age	          Age	                                               Year	    double    0
+cad.dur	      Duration of Symptoms of Coronary Artery Disease	 	          double    0
+choleste    	Cholesterol	                                       mg %	    double    1246
+sigdz	        Significant Coronary Disease by Cardiac Cath	   	   	   	  double    0
+tvdlm	        Three Vessel or Left Main Disease by Cardiac Cath 	        double    3
+
+
+## Resumen de datos
+
+Para conocer bien una base de datos en R, hay una serie de comandos que debemos usar:
+```{r  comment="  "}
+class(mydata)
+nrow(mydata)
+ncol(mydata)
+row <- nrow(mydata)
+col <- ncol(mydata)
+```
+
+- La base de datos tiene `r row` filas y `r col` columnas.
+
+```{r comment="  "}
+names(mydata)
+names(mydata)[2]
+```
+
+- Debemos ver un resumen completo de nuestros datos. Como `summary(mydata)` muchas veces es demasiado amplio para mostrarlo todo aqu&iacute;, lo podemos reducir a unas pocas variables: todas las filas ( , ...) y las columnas (1,2). Podemos escoger las filas y columnas que queramos:
+- He inactivado algunos comandos para que no salten en el documento final, pero los puedes mirar en la consola uno por uno:
+
+```{r  comment="  ", eval=FALSE}
+View(mydata)
+fix(mydata)
+summary(mydata)
+summary(mydata[ , ]) equivale al comando anterior
+```
+
+```{r  comment="  "}
+summary(mydata[ , c(1,2)])
+```
+
+
+### Soluci&oacute;n de problemas de formato de las variables
+
+R no siempre importa las variables como queremos. Por ejemplo, si queremos cambiar una variable num&eacute;rica como `sex` a factor, ponemos:
+```{r comment="  "}
+mydata$sex <- ordered(mydata$sex,
+levels = c(0,1),
+labels = c("Hombre", "Mujer"))
+```
+
+```{r comment="  ", eval=FALSE}
+mydata[, 2] <- as.numeric(mydata[, 2]) # y de nuevo a numerica. 
+# age es la variable num. 2
+```
+
+## Estadistica descriptiva
+
+Ya tenemos nuestros datos importados  
+Ahora, debemos calcular:   
+
+- Frecuencias de las variables no-num&eacute;ricas (factores)
+- Resumen de las variables num&eacute;ricas
+
+```{r comment="  "}
+summary(mydata$sex)
+# Porcentaje de hombres:
+summary(mydata$sex)[1] / (summary(mydata$sex)[1] + summary(mydata$sex)[2]) * 100
+# Porcentaje de mujeres:
+summary(mydata$sex)[2] / (summary(mydata$sex)[1] + summary(mydata$sex)[2]) * 100
+```
+
+```{r comment="  "}
+summary(mydata$age)
+# Mediana:
+summary(mydata$age)[3]
+```
+
+### Ejercicio 1: 
+
+Haz trozos de c&oacute;digo a continuaci&oacute;n, con los res&uacute;menes (usando `summary`) de las variables de la base de datos.
+
+```{r }
+
+```
+
+
+## Gr&aacute;ficos
+
+As&iacute; como es importante resumir los datos mediante n&uacute;meros y texto, lo es igualmente el resumen mediante los [gr&aacute;ficos](http://ggplot2.org/book/qplot.pdf):   
+
+La funci&oacute;n `plot` de R tiene muchas opciones, pero es mucho m&aacute;s flexible la funci&oacute;n `qplot`del paquete `ggplot2` (gracias al mejor "profe de R" [Hadley Wickham](http://hadley.nz/)).  
+
+- Los factores (variables no-num&eacute;ricas) se representar&aacute;n mediante diagramas de **barras**:
+
+```{r comment="  ", fig.height=4, fig.width=4}
+library(ggplot2)
+qplot(sex, data = mydata, geom = "bar")
+```
+
+- Las variables num&eacute;ricas se representar&aacute;n mediante **histogramas**:
+
+```{r comment="  ", fig.height=4, fig.width=4, message=FALSE}
+qplot(age, data = mydata, geom = "histogram")
+```
+
+- Se puede cambiar la apariencia del gr&aacute;fico muy f&aacute;cilmente:
+
+```{r comment="  ", fig.height=4, fig.width=4, message=FALSE}
+# Los graficos tambien se pueden guardar dentro de objetos:
+grafo <- qplot(age, data = mydata, 
+      geom="histogram", 
+      xlab="Edad", # nombre del eje x
+      ylab="Frecuencia", # nombre del eje y
+      fill=I("#F17022"), # color de relleno (anaranjado)
+      col=I("grey")) + # color de linea (gris)
+  theme_bw() # con "+ theme_bw()" le ponemos fondo blanco
+
+grafo
+```
+
+- En cuanto a las paletas, la abanico completo de colores se consulta [aqu&iacute;](http://www.w3schools.com/colors/colors_picker.asp), y la paleta **tango**  [aqu&iacute;](http://tango.freedesktop.org/Tango_Icon_Theme_Guidelines) y [aqu&iacute;](http://www.colorcombos.com/tags/colors/tango). 
+
+- R y `ggplot2` tambi&eacute;n permiten cruzar una variable continua con un factor:
+
+```{r comment="  ", fig.height=4, fig.width=8, message=FALSE}
+library(RColorBrewer) # varias paletas de color
+require(gridExtra)
+
+grafo2 <- ggplot(mydata, aes(x=age, fill=sex)) +
+  geom_histogram(position="dodge", binwidth = 5) +
+  xlab("Edad") + 
+  ylab("Frecuencia") +
+  theme_bw() + 
+  scale_colour_brewer(palette = "Set2") + # cambiamos la paleta de colores de linea
+  scale_fill_brewer(palette = "Set2") # cambiamos la paleta de colores de relleno
+
+grafo3 <- qplot(age, data = mydata, 
+      geom="density", 
+      xlab="Edad", 
+      ylab="Densidad", 
+      fill=sex, # color de relleno (segun los niveles de factor)
+      col=sex, # color de linea (segun los niveles de factor)
+      alpha=I(0.7)) + # transparencia de las capas, va entre 0 y 1
+  theme_bw() + 
+  scale_colour_brewer(palette = "Set2") + 
+  scale_fill_brewer(palette = "Set2") 
+
+grid.arrange(grafo2, grafo3, ncol=2) # poner un grafico junto al otro en 2 columnas
+```
+
+- Hay distintas paletas de R para este tipo de gr&aacute;ficos. Las del paquete `RColorBrewer`que hemos empleado est&aacute;n [aqu&iacute;](http://www.ucl.ac.uk/~zctpep9/Archived%20webpages/Cookbook%20for%20R%20%C2%BB%20Colors%20(ggplot2)_files/colorbrewer.png).
+
+- Para representar 2 variables num&eacute;ricas, tenemos el **scatterplot** (diagrama de dispersi&oacute;n)
+
+```{r comment="  ", fig.height=4, fig.width=4}
+qplot(age, cad.dur, data = mydata, 
+      alpha=I(0.5)) +
+  theme_bw() 
+```
+
+```{r comment="  ", fig.height=4, fig.width=5}
+qplot(age, cad.dur, data = mydata, 
+      alpha=I(0.2),
+      col=sex) + # puntos coloreados por niveles de un factor
+  theme_bw() +
+  scale_colour_brewer(palette = "Set2") +
+  scale_fill_brewer(palette = "Set2")
+```
+
+
+### Ejercicio 2:
+
+Elabora un gr&aacute;fico adecuado para cada tipo de variable de la base de datos. Recuerda que puedes controlar el tama&ntilde;o de los mismos:
+
+Experimenta con el cambio de color de los elementos, cambio de t&iacute;tulos de los ejes... etc.
+
+```{r }
+
+```
+
+
+## Normalidad
+
+Esto s&oacute;lo se refiere a las variables num&eacute;ricas. En el caso de la homocedasticidad, una variable num&eacute;rica ser&aacute; (o no) homoced&aacute;stica respecto a un factor.
+
+- Examinaremos la normalidad mediante el test de Shapiro-Wilk. Si el p-valor del test es < 0.05, diremos que la variable **no es normal/ gaussiana**.
+
+```{r comment="  "}
+# shapiro.test(mydata$age)
+shapiro.test(mydata$age)
+shapi <- shapiro.test(mydata$age)
+```
+
+- R detecta que la variable es normal (p-valor = `r round(shapi$p.value, 4)`).  
+- Sin embargo, a veces (no R) detecta err&oacute;neamente variables que podr&iacute;an perfectamente funcionar como normales. Para ello, nos apoyaremos en un gr&aacute;fico de normalidad, o [q-q plot](https://en.wikipedia.org/wiki/Q%E2%80%93Q_plot).
+
+```{r comment="  ", fig.height=4, fig.width=4}
+library(car)
+# qqPlot(mydata$age)
+qqPlot(mydata$age, col.lines="#F17022")
+```
+
+- No hay una desviaci&oacute;n importante de la l&iacute;nea de normalidad, por lo que consideraremos que la variable es normal.
+
+### Ejercicio 3:
+
+Comprueba si las variables num&eacute;ricas de la base cumplen la normalidad.
+
+```{r }
+
+```
+
+
+
+## Homocedasticidad
+
+En el caso de la homocedasticidad, una variable num&eacute;rica ser&aacute; (o no) homoced&aacute;stica respecto a un factor.   
+Esto quiere decir que la varianza de la variable num&eacute;rica es la misma para cada nivel del factor por el que es dividida.
+
+- Examinaremos la homocedasticidad mediante el test de Levene. Si el p-valor del test es < 0.05, diremos que la variable es **heteroced&aacute;stica**.
+
+```{r comment="  "}
+# levene.test(mydata$age)
+leveneTest(mydata$age, mydata$sex, center=median)
+
+leve <- leveneTest(mydata$age, mydata$sex, center=median)
+```
+
+- La variable edad es homoced&aacute;stica con respecto al sex de los pacientes (p-valor = `r round(leve[1,3], 4)`). Quiere decir que la varianza de la edad en hombres es similar a la varianza de las mujeres.
+
+### Ejercicio 4:
+
+Comprueba si las variables num&eacute;ricas de la base son homoced&aacute;sticas respecto a alg&uacute;n factor (no hace falta cruzar todas las variables num&eacute;ricas contra todos los factores, sino aquellos cruces que te parezcan m&aacute;s interesantes).
+
+```{r }
+
+```
+
+
+### Ejercicio 5. Datos propios:
+
+Antes de nada, pega el archivo `Tabla1vt.csv` en el directorio "**data**".  
+Imp&oacute;rtalo utilizando el comando visto m&aacute;s arriba:  
+
+```{r  comment="  "}
+dataname <- "Tabla1vt.csv"
+mydata <- read.csv(paste(datadir, "/", dataname, sep=""), 
+         header = TRUE, 
+         sep = "\t",
+         dec = ",")
+```
+
+Una vez importado, examina los nombres que tienen las variables dentro de R. &iquest;Ser&iacute;a conveniente corregir alguno para que fuesen m&aacute;s legibles?.
+
+```{r  comment="  "}
+names(mydata)
+```
+
+Prueba a resumir alguna variable, como la edad:
+
+```{r  comment="  "}
+summary(mydata$Edad)
+```
+
+<br>
+
+<font color= "#F17022">Hecho artesanalmente con [RMarkdown](http://rmarkdown.rstudio.com) </font>

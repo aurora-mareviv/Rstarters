@@ -1,0 +1,94 @@
+---
+title: "Cuaderno 1: RMarkdown"
+author: "Aurora Baluja"
+date: "24 de agosto de 2017"
+output: html_document
+---
+
+
+## Introducci&oacute;n a R Markdown
+
+[R](https://en.wikipedia.org/wiki/R_(programming_language)) es un potente lenguaje, desarrollado para ser usado en el &aacute;mbito de la estad&iacute;stica y el tratamiento de datos. Est&aacute; basado en el lenguaje **S**, en el que tambi&eacute;n se basa SPSS.
+
+Este es un documento RMarkdown. RMarkdown (o RMD) es un documento de texto simple. Este texto simple puede ser [**marcado**](http://rmarkdown.rstudio.com/authoring_basics.html) ("mark-down"), de forma que un int&eacute;rprete lo pueda transformar en un documento m&aacute;s complejo, como un HTML (pag. web o "mark-up") un PDF, o un documento de Word. Para m&aacute;s detalles, ver: <http://rmarkdown.rstudio.com>.
+
+ **Knitr** es un paquete desarrollado por Yihui Xie que permite generar un documento autom&aacute;ticamente usando Markdown y c&oacute;digo R.
+ 
+1. El documento RMD se generar&aacute; al pulsar el bot&oacute;n **Knit**. Este documento RMD puede contener no s&oacute;lo texto `marcado`
+, sino tambi&eacute;n c&oacute;digo R y/o resultados del an&aacute;lisis del c&oacute;digo R.
+Puedes poner c&oacute;digo R dentro de estos conjuntos de caracteres:
+
+```{r}
+# aqui codigo R
+1+1
+```
+
+2. Dentro de las llaves, adem&aacute;s de indicar qu&eacute; lenguaje usamos (r), se pueden a&ntilde;adir [opciones](http://yihui.name/knitr/options/) que modifican c&oacute;mo se muestra el c&oacute;digo:
+
+```{r echo=FALSE}
+# aqui no se vera el codigo R. Si ponemos "echo=TRUE", volvera a verse.
+x <- 1+1
+x
+```
+
+3. Las opciones se separan por comas. Hay multitud de ellas, para todo tipo de necesidades.
+
+```{r echo=FALSE, comment=""}
+# aqui no se vera el codigo R. Si ponemos "echo=TRUE", volvera a verse.
+# mediante la opcion "comment" hemos suprimido los "##" que habia al principio del resultado. comment="" equivale a comment="nada".
+result <- 2+1
+result
+```
+
+4. Los resultados pueden estar tanto dentro de sus propias l&iacute;neas en el texto, como insertados en una l&iacute;nea de texto simple. Por ejemplo, la suma del anterior comando es = `r result`. Esto hace que se puedan generar resultados de forma autom&aacute;tica, sin tener que cambiar el texto.
+
+5. Ejercicio 1: modifica este trozo de c&oacute;digo para que muestre la multiplicaci&oacute;n de los n&uacute;meros 35 y 76, sin mostrar el c&oacute;digo que ha generado el n&uacute;mero:
+
+```{r}
+# aqui codigo R
+
+```
+
+## Mostrar gr&aacute;ficos
+
+Existen un gran n&uacute;mero de opciones para dar formato a los gr&aacute;ficos producidos por c&oacute;digo R:
+
+El tama&ntilde;o de la imagen (altura y anchura) se programa en pulgadas.. (sic)
+
+```{r echo=FALSE, fig.height=5, fig.width=5}
+plot(cars)
+# usamos una base de datos sobre coches, que viene incluida de forma basica dentro de R
+```
+
+6. Ejercicio 2: modifica el tama&ntilde;o de la imagen para que tenga 6 pulgadas de altura y 7 pulgadas (inches) de ancho.
+
+
+## T&iacute;tulos
+### Y subt&iacute;tulos
+#### Y sub-sub t&iacute;tulos...
+
+Para m&aacute;s opciones de formato, consultar [aqu&iacute;.](https://www.rstudio.com/wp-content/uploads/2015/03/rmarkdown-reference.pdf)
+
+
+
+## Marcado HTML en RMarkdown
+
+RMarkdown tambi&eacute;n admite algunas etiquetas de marcado de texto t&iacute;picas de las p&aacute;ginas web, como son las del <font color= "#ff6600">color </font> de letra, la sangr&iacute;a...
+
+<p style="text-align:center;"> (texto centrado) </p>
+
+Para una paleta de colores completa, consulta este enlace: http://www.w3schools.com/colors/colors_picker.asp.
+
+El color <font color= "#ff6600"> naranja</font>, en este caso, es "#ff6600".
+
+
+
+## Info de mi sesi&oacute;n de R
+
+Env&iacute;o la informaci&oacute;n de mi sesi&oacute;n de R con la que hice este documento, para en el caso de problemas poder cotejarla con la tuya:
+```{r comment=""}
+sessionInfo()
+```
+
+<br>
+<font color= "#ff6600">Hecho artesanalmente con [RMarkdown](http://rmarkdown.rstudio.com) </font>

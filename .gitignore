@@ -120,7 +120,7 @@ venv
 derby.log
 
 
-####### Rstarters repo gitignore
+####### Rstarters repo .gitignore
 /raw_data/
 /Rmarkdown_Project/data/Tabla1vt.csv
-
+/Rmarkdown_Project/data/Tabla1vt.xlsx

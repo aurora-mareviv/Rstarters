@@ -1,7 +1,7 @@
 ##########################################
 ### COMMANDS TO START WITH R CONSOLE 2 ###
 ##########################################
-# Under GNU-GPL license
+# Under GNU-GPL license v.3
  
 # First, install R: http://cran.r-project.org/
 # Second, install and open R-Studio: http://www.rstudio.com/ide/download/desktop
@@ -71,7 +71,12 @@ mydata$var1 <- as.numeric(mydata$var1)
 
 # In .XLS format (Excel 2003)
 
-    # Option 1: use R Commander, from the Menu>>Data>>Import Data
+    # Option 1: use readxl (updated! this is my favourite option now)
+    library("readxl")
+    rutaxl <- "C:/Users/Me/My Documents/.../My data/somedata.xls"
+    mydata <- read_excel(rutaxl, sheet = 1) 
+    # the second argument (aka "sheet = 1") imports the first sheet in the Excel file. 
+    # to import the second sheet use "sheet = 2" and so on
     
     # Option 2: use gdata (can give errors if Perl modules are missing)
     library(gdata)
@@ -95,13 +100,22 @@ mydata$var1 <- as.numeric(mydata$var1)
     fix(mydata)
     # Save the corrected file
     save(mydata, file="mydata.RData")
-
+    
+    # Option 4: use R Commander, from the Menu>>Data>>Import Data
+    
     # Other options available: http://cran.r-project.org/doc/manuals/r-release/R-data.html
 
 
 # In .XLSX format (Excel 2007-2010)
-
-    # Option 1: use gdata (can give errors if Perl modules are missing)
+    
+    # Option 1: use readxl (updated! this is my favourite option now)
+    library("readxl")
+    rutaxl <- "C:/Users/Me/My Documents/.../My data/somedata.xlsx"
+    mydata <- read_excel(rutaxl, sheet = 1) 
+    # the second argument (aka "sheet = 1") imports the first sheet in the Excel file. 
+    # to import the second sheet use "sheet = 2" and so on
+    
+    # Option 2: use gdata (can give errors if Perl modules are missing)
     library(gdata)
     mydata <- "C:/Users/Me/My Documents/.../My data/somedata.xlsx"
     mydata <- read.xls(mydata, sheet='name of my sheet')
@@ -112,7 +126,7 @@ mydata$var1 <- as.numeric(mydata$var1)
     # Save the corrected file
     save(mydata, file="mydata.RData")
 
-    # Option 2: XLConnect (can give errors if Java modules are missing)
+    # Option 3: XLConnect (can give errors if Java modules are missing)
     library(XLConnect, pos=4)
     .Workbook <- loadWorkbook("C:/Users/Me/My Documents/.../My data/somedata.xlsx")
     mydata <- readWorksheet(.Workbook, "Sheet1")

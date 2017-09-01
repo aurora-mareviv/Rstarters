@@ -1,7 +1,7 @@
 ##########################################
 ### COMMANDS TO START WITH R CONSOLE 1 ###
 ##########################################
-# Under GNU-GPL license
+# Under GNU-GPL license v.3
 
 # First, install R: http://cran.r-project.org/
 # Second, install and open R-Studio: http://www.rstudio.com/ide/download/desktop

@@ -14,7 +14,7 @@ output:
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, results='hide'}
 # Instala paquetes que puedan faltar en tu sistema. Automagicamente!
-list.of.packages <- c("rmarkdown", "base64enc", "jsonlite", "ggplot2", "Rcpp", "knitr", "car", "RColorBrewer", "gridExtra")
+list.of.packages <- c("rmarkdown", "base64enc", "jsonlite", "ggplot2", "Rcpp", "knitr", "car", "RColorBrewer", "gridExtra", "readxl", "xlsx")
 new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
 if(length(new.packages)) install.packages(new.packages, repos='https://cran.rstudio.com/')
 ```
@@ -29,20 +29,16 @@ Todo el tutorial se puede descargar en *.ZIP* desde este [enlace](https://github
 
 Para importar los datos de nuestra base, usaremos el siguiente [m&eacute;todo](http://www.r-tutor.com/r-introduction/data-frame/data-import). 
 
-Este es mi directorio de trabajo:
+Este es tu directorio de trabajo:
 
 ```{r comment="  ", eval=FALSE}
 getwd()
 ```
 
-```{r comment="  ", echo=FALSE}
-paste("/..../Rstarters/RmarkdownProject/")
-```
-
 
 - Debemos fijarnos en que el directorio/carpeta de trabajo coincida con aquel que queremos y en el que est&aacute;n los datos. En R se llama el "working directory".      
-- Para lograr eso en un documento *.RMD*, la mejor soluci&oacute;n es que *todo* est&eacute; en una misma carpeta: scripts, datos etc...
-- Lo asigno a una variable de R. Tiene el formato "character" que significa que es una cadena de texto sencillamente. 
+- Para lograr eso en un documento *.RMD*, la mejor soluci&oacute;n es que *todo* est&eacute; en una unas carpetas determinadas: scripts, datos etc...
+- Guardo las rutas que me interesan en una variable de R. Tiene el formato "character" que significa que es una cadena de texto sencillamente. 
 
 ```{r comment="  "}
 # la carpeta donde esta el cuaderno
@@ -51,7 +47,7 @@ wdir <- getwd()
 datadir <- paste(wdir, "/data", sep="")
 # la carpeta donde guardo las imagenes
 plotdir <- paste(wdir, "/rplot", sep="")
-# y la carpeta inmediatamente por encima
+# bonus: la carpeta inmediatamente por encima
 wdirUp <- gsub("\\Rmarkdown_Project", "", wdir) 
 ```
 
@@ -83,7 +79,7 @@ Sacados del siguiente [enlace](http://biostat.mc.vanderbilt.edu/wiki/Main/DataSe
 
 Name            Labels	                                         Units    Storage     NAs
 ---------     --------	                                         ------   --------  -----
-sex	    		                                                              double    0
+sex                                                                       double    0
 age	          Age	                                               Year	    double    0
 cad.dur	      Duration of Symptoms of Coronary Artery Disease	 	          double    0
 choleste    	Cholesterol	                                       mg %	    double    1246
@@ -95,26 +91,26 @@ tvdlm	        Three Vessel or Left Main Disease by Cardiac Cath 	        double 
 
 Para conocer bien una base de datos en R, hay una serie de comandos que debemos usar:
 ```{r  comment="  "}
-class(mydata)
-nrow(mydata)
-ncol(mydata)
-row <- nrow(mydata)
+class(mydata) # el formato de los datos en R
+nrow(mydata) # numero de filas
+ncol(mydata) # numero de columnas
+row <- nrow(mydata) # almaceno el num de filas en la variable "row"
 col <- ncol(mydata)
 ```
 
 - La base de datos tiene `r row` filas y `r col` columnas.
 
 ```{r comment="  "}
-names(mydata)
-names(mydata)[2]
+names(mydata) # nombres de las variables de mis datos
+names(mydata)[2] # nombre de la segunda variable
 ```
 
 - Debemos ver un resumen completo de nuestros datos. Como `summary(mydata)` muchas veces es demasiado amplio para mostrarlo todo aqu&iacute;, lo podemos reducir a unas pocas variables: todas las filas ( , ...) y las columnas (1,2). Podemos escoger las filas y columnas que queramos:
-- He inactivado algunos comandos para que no salten en el documento final, pero los puedes mirar en la consola uno por uno:
+- He inactivado (con `eval=FALSE`) algunos comandos para que no salten en el documento final, pero los puedes mirar en la consola uno por uno:
 
 ```{r  comment="  ", eval=FALSE}
-View(mydata)
-fix(mydata)
+View(mydata) # visualizar datos
+fix(mydata) # modificar datos
 summary(mydata)
 summary(mydata[ , ]) equivale al comando anterior
 ```
@@ -274,10 +270,11 @@ Esto s&oacute;lo se refiere a las variables num&eacute;ricas. En el caso de la h
 # shapiro.test(mydata$age)
 shapiro.test(mydata$age)
 shapi <- shapiro.test(mydata$age)
+pvalor.redondeo <- round(shapi$p.value, 3) # redondea hasta 3 decimales el valor p
 ```
 
-- R detecta que la variable es normal (p-valor = `r round(shapi$p.value, 4)`).  
-- Sin embargo, a veces (no R) detecta err&oacute;neamente variables que podr&iacute;an perfectamente funcionar como normales. Para ello, nos apoyaremos en un gr&aacute;fico de normalidad, o [q-q plot](https://en.wikipedia.org/wiki/Q%E2%80%93Q_plot).
+- El **test de Shapiro** detecta que la variable no es normal (p-valor = `r pvalor.redondeo`).  
+- Sin embargo, a veces este test detecta err&oacute;neamente variables que podr&iacute;an perfectamente funcionar como normales. Para ello, nos apoyaremos en un gr&aacute;fico de normalidad, o [q-q plot](https://en.wikipedia.org/wiki/Q%E2%80%93Q_plot).
 
 ```{r comment="  ", fig.height=4, fig.width=4}
 library(car)
@@ -285,11 +282,11 @@ library(car)
 qqPlot(mydata$age, col.lines="#F17022")
 ```
 
-- No hay una desviaci&oacute;n importante de la l&iacute;nea de normalidad, por lo que consideraremos que la variable es normal.
+- No hay una desviaci&oacute;n importante de la l&iacute;nea de normalidad, por lo que consideraremos que la variable es normal (a pesar de lo que dice el test de Shapiro-Wilk).
 
 ### Ejercicio 3:
 
-Comprueba si las variables num&eacute;ricas de la base cumplen la normalidad.
+Comprueba si las variables num&eacute;ricas de los datos cumplen la normalidad.
 
 ```{r }
 
@@ -309,20 +306,23 @@ Esto quiere decir que la varianza de la variable num&eacute;rica es la misma par
 leveneTest(mydata$age, mydata$sex, center=median)
 
 leve <- leveneTest(mydata$age, mydata$sex, center=median)
+redondeo.levene <- round(leve[1,3], 4)
 ```
 
-- La variable edad es homoced&aacute;stica con respecto al sex de los pacientes (p-valor = `r round(leve[1,3], 4)`). Quiere decir que la varianza de la edad en hombres es similar a la varianza de las mujeres.
+- La variable edad es homoced&aacute;stica con respecto al sexo de los pacientes (p-valor = `r redondeo.levene`). **Quiere decir que la varianza de la edad en hombres es similar a la varianza de las mujeres**.
 
 ### Ejercicio 4:
 
 Comprueba si las variables num&eacute;ricas de la base son homoced&aacute;sticas respecto a alg&uacute;n factor (no hace falta cruzar todas las variables num&eacute;ricas contra todos los factores, sino aquellos cruces que te parezcan m&aacute;s interesantes).
 
-```{r }
+```{r echo=TRUE, comment="  "}
 
 ```
 
 
 ### Ejercicio 5. Datos propios:
+
+#### CSV
 
 Antes de nada, pega el archivo `Tabla1vt.csv` en el directorio "**data**".  
 Imp&oacute;rtalo utilizando el comando visto m&aacute;s arriba:  
@@ -335,6 +335,17 @@ mydata <- read.csv(paste(datadir, "/", dataname, sep=""),
          dec = ",")
 ```
 
+#### Excel
+
+```{r  comment="  "}
+dataname <- "Tabla1vt.xlsx"  # el nombre del archivo
+rutaxl <- paste(datadir, "/", dataname, sep="")  # la ruta completa al archivo
+
+library(readxl)
+mydata <- read_excel(rutaxl, sheet = 1)  # importa la primera hoja del excel
+```
+
+
 Una vez importado, examina los nombres que tienen las variables dentro de R. &iquest;Ser&iacute;a conveniente corregir alguno para que fuesen m&aacute;s legibles?.
 
 ```{r  comment="  "}
@@ -346,6 +357,21 @@ Prueba a resumir alguna variable, como la edad:
 ```{r  comment="  "}
 summary(mydata$Edad)
 ```
+
+
+#### Exportar datos de R a Excel
+
+```{r  comment="  "}
+dataname <- "mydata.xlsx"  # nombre del futuro archivo
+rutaxl <- paste(datadir, "/", dataname, sep="")   # la ruta completa al futuro archivo
+
+library(xlsx)
+write.xlsx(mydata, rutaxl) # crea el archivo en la ruta especificada
+```
+
+
+
+
 
 <br>
 

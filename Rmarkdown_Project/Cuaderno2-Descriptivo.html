@@ -561,7 +561,7 @@ Esto quiere decir que la varianza de la variable numérica es la misma para cada
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">leve &lt;-<span class="st"> </span><span class="kw">leveneTest</span>(mydata<span class="op">$</span>age, mydata<span class="op">$</span>sex, <span class="dt">center=</span>median)
 redondeo.levene &lt;-<span class="st"> </span><span class="kw">round</span>(leve[<span class="dv">1</span>,<span class="dv">3</span>], <span class="dv">4</span>)</code></pre></div>
 <ul>
-<li>La variable edad es homocedástica con respecto al sexo de los pacientes (p-valor = 0.8868). Quiere decir que la varianza de la edad en hombres es similar a la varianza de las mujeres.</li>
+<li>La variable edad es homocedástica con respecto al sexo de los pacientes (p-valor = 0.8868). <strong>Quiere decir que la varianza de la edad en hombres es similar a la varianza de las mujeres</strong>.</li>
 </ul>
 <div id="ejercicio-4" class="section level3">
 <h3>Ejercicio 4:</h3>
@@ -569,6 +569,8 @@ redondeo.levene &lt;-<span class="st"> </span><span class="kw">round</span>(leve
 </div>
 <div id="ejercicio-5.-datos-propios" class="section level3">
 <h3>Ejercicio 5. Datos propios:</h3>
+<div id="csv" class="section level4">
+<h4>CSV</h4>
 <p>Antes de nada, pega el archivo <code>Tabla1vt.csv</code> en el directorio “<strong>data</strong>”.<br />
 Impórtalo utilizando el comando visto más arriba:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dataname &lt;-<span class="st"> &quot;Tabla1vt.csv&quot;</span>
@@ -576,15 +578,55 @@ mydata &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span clas
          <span class="dt">header =</span> <span class="ot">TRUE</span>, 
          <span class="dt">sep =</span> <span class="st">&quot;</span><span class="ch">\t</span><span class="st">&quot;</span>,
          <span class="dt">dec =</span> <span class="st">&quot;,&quot;</span>)</code></pre></div>
+</div>
+<div id="excel" class="section level4">
+<h4>Excel</h4>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dataname &lt;-<span class="st"> &quot;Tabla1vt.xlsx&quot;</span>  <span class="co"># el nombre del archivo</span>
+rutaxl &lt;-<span class="st"> </span><span class="kw">paste</span>(datadir, <span class="st">&quot;/&quot;</span>, dataname, <span class="dt">sep=</span><span class="st">&quot;&quot;</span>)  <span class="co"># la ruta completa al archivo</span>
+
+<span class="kw">library</span>(readxl)
+mydata &lt;-<span class="st"> </span><span class="kw">read_excel</span>(rutaxl, <span class="dt">sheet =</span> <span class="dv">1</span>)  <span class="co"># importa la primera hoja del excel</span></code></pre></div>
 <p>Una vez importado, examina los nombres que tienen las variables dentro de R. ¿Sería conveniente corregir alguno para que fuesen más legibles?.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">names</span>(mydata)</code></pre></div>
-<pre><code>   [1] &quot;Tipo.Cx.Edad.Fecha.Intervencion.Tiempo.de.Cl.Ao..min..T.CEC..min..EUROSCORE.T..EUROSCORE.L..Estadio.Cr..FGR.45..Si.FGR..45.Valor.Anemia..Hb.g.dL.SCA..Sexo.F..AC.potentes...5d..LW.Fonda.o.HNF..WB.Score.Consumo.IOPq.Sí.si..Nº.Pools.Consumo.IOPl.Sí.si..Nº.Uni.Consumo.IOFib.Sí.si.Ctd..g..Uso.IORec.Vrec..mL..Nº.Tx.24h.Nº.Tx..24.y..48h.Total.Tx..Esternotomía.Notas&quot;</code></pre>
+<pre><code>    [1] &quot;Tipo Cx&quot;                &quot;Edad&quot;                  
+    [3] &quot;Fecha Intervencion&quot;     &quot;Tiempo de Cl. Ao (min)&quot;
+    [5] &quot;T. CEC (min)&quot;           &quot;EUROSCORE T.&quot;          
+    [7] &quot;EUROSCORE L.&quot;           &quot;Estadio Cr&quot;            
+    [9] NA                       &quot;FGR&lt;45&quot;                
+   [11] NA                       &quot;Si FGR &lt;45, Valor&quot;     
+   [13] &quot;Anemia&quot;                 NA                      
+   [15] &quot;Hb g/dL&quot;                &quot;SCA&quot;                   
+   [17] NA                       &quot;Sexo F&quot;                
+   [19] NA                       &quot;AC potentes &lt; 5d&quot;      
+   [21] NA                       &quot;LW/Fonda o HNF&quot;        
+   [23] NA                       &quot;WB Score&quot;              
+   [25] &quot;Consumo IOPq&quot;           &quot;Sí si, Nº Pools&quot;       
+   [27] &quot;Consumo IOPl&quot;           &quot;Sí si, Nº Uni&quot;         
+   [29] &quot;Consumo IOFib&quot;          &quot;Sí si, Ctd (g)&quot;        
+   [31] &quot;Uso IORec&quot;              &quot;Vrec (mL)&quot;             
+   [33] &quot;Nº Tx 24h&quot;              &quot;Nº Tx &gt;24 y &lt;48h&quot;      
+   [35] &quot;Total Tx &quot;              &quot;Esternotomía&quot;          
+   [37] &quot;Notas&quot;                  &quot;&quot;</code></pre>
 <p>Prueba a resumir alguna variable, como la edad:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(mydata<span class="op">$</span>Edad)</code></pre></div>
-<pre><code>   Length  Class   Mode 
-        0   NULL   NULL</code></pre>
+<pre><code>      Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+     29.00   66.50   73.00   71.14   79.00   85.00     377</code></pre>
+</div>
+<div id="exportar-datos-de-r-a-excel" class="section level4">
+<h4>Exportar datos de R a Excel</h4>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dataname &lt;-<span class="st"> &quot;mydata.xlsx&quot;</span>  <span class="co"># nombre del futuro archivo</span>
+rutaxl &lt;-<span class="st"> </span><span class="kw">paste</span>(datadir, <span class="st">&quot;/&quot;</span>, dataname, <span class="dt">sep=</span><span class="st">&quot;&quot;</span>)   <span class="co"># la ruta completa al futuro archivo</span>
+
+<span class="kw">library</span>(xlsx)
+<span class="kw">write.xlsx</span>(mydata, rutaxl) <span class="co"># crea el archivo en la ruta especificada</span></code></pre></div>
+</div>
+<div id="guardar-datos-en-formato-nativo-de-r-.rdata" class="section level4">
+<h4>Guardar datos en formato nativo de R: <code>.RData</code></h4>
+<p>Los guarda en la ruta por defecto, a menos que especifiquemos otra:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">save</span>(mydata, <span class="dt">file=</span><span class="st">&quot;data/mydata.RData&quot;</span>)</code></pre></div>
 <p><br></p>
 <p><font color="#F17022">Hecho artesanalmente con <a href="http://rmarkdown.rstudio.com">RMarkdown</a> </font></p>
+</div>
 </div>
 </div>
 

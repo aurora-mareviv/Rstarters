@@ -270,37 +270,45 @@ wdirUp &lt;-<span class="st"> </span><span class="kw">gsub</span>(<span class="s
 <h2>Importación de datos</h2>
 <p>Antes de nada, pega el archivo <code>Tabla1vt.csv</code> en el directorio “<strong>data</strong>”.<br />
 Impórtalo utilizando el comando visto más arriba:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dataname &lt;-<span class="st"> &quot;Tabla1vt.csv&quot;</span>
-mydata &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="kw">paste</span>(datadir, <span class="st">&quot;/&quot;</span>, dataname, <span class="dt">sep=</span><span class="st">&quot;&quot;</span>), 
-         <span class="dt">header =</span> <span class="ot">TRUE</span>, 
-         <span class="dt">sep =</span> <span class="st">&quot;,&quot;</span>,
-         <span class="dt">dec =</span> <span class="st">&quot;,&quot;</span>)
-<span class="kw">class</span>(mydata)</code></pre></div>
-<pre><code>   [1] &quot;data.frame&quot;</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mydata &lt;-<span class="st"> </span><span class="kw">as_data_frame</span>(mydata)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dataname &lt;-<span class="st"> &quot;Tabla1vt.xlsx&quot;</span>  <span class="co"># el nombre del archivo</span>
+rutaxl &lt;-<span class="st"> </span><span class="kw">paste</span>(datadir, <span class="st">&quot;/&quot;</span>, dataname, <span class="dt">sep=</span><span class="st">&quot;&quot;</span>)  <span class="co"># la ruta completa al archivo</span>
+
+<span class="kw">library</span>(readxl)
+mydata &lt;-<span class="st"> </span><span class="kw">read_excel</span>(rutaxl, <span class="dt">sheet =</span> <span class="dv">1</span>)  <span class="co"># importa la primera hoja del excel</span></code></pre></div>
 <p>Una vez importado, examina los nombres que tienen las variables dentro de R. ¿Sería conveniente corregir alguno para que fuesen más legibles?.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">names</span>(mydata)</code></pre></div>
-<pre><code>    [1] &quot;Tipo.Cx&quot;               &quot;Edad&quot;                 
-    [3] &quot;Fecha.Intervencion&quot;    &quot;Tiempo.de.Cl.Ao..min.&quot;
-    [5] &quot;T.CEC..min.&quot;           &quot;EUROSCORE.T.&quot;         
-    [7] &quot;EUROSCORE.L.&quot;          &quot;Estadio.Cr&quot;           
-    [9] &quot;X&quot;                     &quot;FGR.45&quot;               
-   [11] &quot;X.1&quot;                   &quot;Si.FGR..45&quot;           
-   [13] &quot;Valor&quot;                 &quot;Anemia&quot;               
-   [15] &quot;X.2&quot;                   &quot;Hb.g.dL&quot;              
-   [17] &quot;SCA&quot;                   &quot;X.3&quot;                  
-   [19] &quot;Sexo.F&quot;                &quot;X.4&quot;                  
-   [21] &quot;AC.potentes...5d&quot;      &quot;X.5&quot;                  
-   [23] &quot;LW.Fonda.o.HNF&quot;        &quot;X.6&quot;                  
-   [25] &quot;WB.Score&quot;              &quot;Consumo.IOPq&quot;         
-   [27] &quot;Sí.si&quot;                 &quot;.Nº.Pools&quot;            
-   [29] &quot;Consumo.IOPl&quot;          &quot;Sí.si.1&quot;              
-   [31] &quot;.Nº.Uni&quot;               &quot;Consumo.IOFib&quot;        
-   [33] &quot;Sí.si.2&quot;               &quot;Ctd..g.&quot;              
-   [35] &quot;Uso.IORec&quot;             &quot;Vrec..mL.&quot;            
-   [37] &quot;Nº.Tx.24h&quot;             &quot;Nº.Tx..24.y..48h&quot;     
-   [39] &quot;Total.Tx.&quot;             &quot;Esternotomía&quot;         
-   [41] &quot;Notas&quot;</code></pre>
+<pre><code>    [1] &quot;Tipo Cx&quot;                &quot;Edad&quot;                  
+    [3] &quot;Fecha Intervencion&quot;     &quot;Tiempo de Cl. Ao (min)&quot;
+    [5] &quot;T. CEC (min)&quot;           &quot;EUROSCORE T.&quot;          
+    [7] &quot;EUROSCORE L.&quot;           &quot;Estadio Cr&quot;            
+    [9] NA                       &quot;FGR&lt;45&quot;                
+   [11] NA                       &quot;Si FGR &lt;45, Valor&quot;     
+   [13] &quot;Anemia&quot;                 NA                      
+   [15] &quot;Hb g/dL&quot;                &quot;SCA&quot;                   
+   [17] NA                       &quot;Sexo F&quot;                
+   [19] NA                       &quot;AC potentes &lt; 5d&quot;      
+   [21] NA                       &quot;LW/Fonda o HNF&quot;        
+   [23] NA                       &quot;WB Score&quot;              
+   [25] &quot;Consumo IOPq&quot;           &quot;Sí si, Nº Pools&quot;       
+   [27] &quot;Consumo IOPl&quot;           &quot;Sí si, Nº Uni&quot;         
+   [29] &quot;Consumo IOFib&quot;          &quot;Sí si, Ctd (g)&quot;        
+   [31] &quot;Uso IORec&quot;              &quot;Vrec (mL)&quot;             
+   [33] &quot;Nº Tx 24h&quot;              &quot;Nº Tx &gt;24 y &lt;48h&quot;      
+   [35] &quot;Total Tx &quot;              &quot;Esternotomía&quot;          
+   [37] &quot;Notas&quot;                  &quot;&quot;</code></pre>
+<div id="guardar-datos-en-formato-nativo-de-r-.rdata" class="section level3">
+<h3>Guardar datos en formato nativo de R: <code>.RData</code></h3>
+<p>Los guarda en la ruta por defecto, a menos que especifiquemos otra:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">save</span>(mydata, <span class="dt">file=</span><span class="st">&quot;data/mydata.RData&quot;</span>)</code></pre></div>
+</div>
+<div id="guardar-datos-en-excel" class="section level3">
+<h3>Guardar datos en Excel</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dataname &lt;-<span class="st"> &quot;mydata.xlsx&quot;</span>  <span class="co"># nombre del futuro archivo</span>
+rutaxl &lt;-<span class="st"> </span><span class="kw">paste</span>(datadir, <span class="st">&quot;/&quot;</span>, dataname, <span class="dt">sep=</span><span class="st">&quot;&quot;</span>)   <span class="co"># la ruta completa al futuro archivo</span>
+
+<span class="kw">library</span>(xlsx)
+<span class="kw">write.xlsx</span>(mydata, rutaxl) <span class="co"># crea el archivo en la ruta especificada</span></code></pre></div>
+</div>
 </div>
 <div id="resumen-general" class="section level2">
 <h2>Resumen general</h2>

@@ -11,16 +11,18 @@
 # You can recycle these commands to make new ones suitable for your own data!
 # Note: the lines of text preceeded by "#" are considered comments, and they are not executed even if they are pasted.
 
-# Install R Commander:
-install.packages(Rcmdr)
-# Execute R commander for first time in a session.
-library(Rcmdr)
-# To execute Rcmdr for second or more times (after being closed in a session):
-Commander()
-# To open a help page write ? and the name of the function.
-?Rcmdr
-?log
-?boxplot
+
+######## R COMMANDER ########
+# # Install R Commander:
+# install.packages(Rcmdr)
+# # Execute R commander for first time in a session.
+# library(Rcmdr)
+# # To execute Rcmdr for second or more times (after being closed in a session):
+# Commander()
+# # To open a help page write ? and the name of the function.
+# ?Rcmdr
+# ?log
+# ?boxplot
 
 
 
@@ -121,7 +123,7 @@ fix(mydata)
 summary(mydata)
 # Summary of any sub-object inside the bigger object "mydata": summary(obj$my.variable.name)
 summary(mydata$var0)
-    mean(mydata$var0) # mean
+    mean(mydata$var0, na.rm=TRUE) # mean without considering missing values (NA)
     sd(mydata$var0) # standard deviation
 summary(mydata$var3)
 # The variable names of my data (important if R has changed them after importing from other data formats)

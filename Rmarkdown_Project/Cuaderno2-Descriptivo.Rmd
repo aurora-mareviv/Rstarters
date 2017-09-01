@@ -361,7 +361,7 @@ summary(mydata$Edad)
 
 #### Exportar datos de R a Excel
 
-```{r  comment="  "}
+```{r  comment="  ", message=FALSE, warning=FALSE}
 dataname <- "mydata.xlsx"  # nombre del futuro archivo
 rutaxl <- paste(datadir, "/", dataname, sep="")   # la ruta completa al futuro archivo
 
@@ -369,6 +369,13 @@ library(xlsx)
 write.xlsx(mydata, rutaxl) # crea el archivo en la ruta especificada
 ```
 
+#### Guardar datos en formato nativo de R: `.RData`
+
+Los guarda en la ruta por defecto, a menos que especifiquemos otra:
+
+```{r  comment="  ", message=FALSE, warning=FALSE}
+save(mydata, file="data/mydata.RData")
+```
 
 
 
